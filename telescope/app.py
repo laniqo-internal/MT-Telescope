@@ -54,7 +54,7 @@ metric = st.sidebar.selectbox(
 )
 
 filters = st.sidebar.multiselect(
-    "Select testset filters:", list(available_filters.keys()), default=["duplicates"]
+    "Select testset filters:", list(available_filters.keys()), default=None
 )
 st.sidebar.subheader("Segment length constraints:")
 length_interval = st.sidebar.slider(
