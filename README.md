@@ -38,7 +38,7 @@ Finally run:
 ```bash
 git clone https://github.com/Unbabel/MT-Telescope
 cd MT-Telescope
-poetry install --no-dev
+poetry install --only main
 ```
 
 ## Scoring:

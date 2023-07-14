@@ -28,18 +28,19 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7.0,<4.0.0"
-unbabel-comet = "1.0.1"
-bert-score = ">=0.3.7"
-sacrebleu = ">=2.0.0"
+python = ">=3.9,<3.10.7"
+unbabel-comet = "2.0.1"
+bert-score = "0.3.13"
+sacrebleu = "2.3.1"
 stanza = ">=1.2"
 streamlit = "^0.79.0"
 plotly = "^4.14.3"
 numpy = ">=1.20.0"
 pytorch-nlp = "0.5.0"
-scipy = ">=1.5.4"
+scipy = "1.11.1"
 click = "8.0.4"
 protobuf = "3.19.4"
+torch = "2.0.1"
 
 [tool.poetry.dev-dependencies]
 coverage = "^5.5"

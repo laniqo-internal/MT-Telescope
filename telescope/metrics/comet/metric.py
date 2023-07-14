@@ -26,7 +26,7 @@ from comet import download_model, load_from_checkpoint
 if "COMET_MODEL" in os.environ:
     MODELNAME = os.environ["COMET_MODEL"]
 else:
-    MODELNAME = "wmt20-comet-da"
+    MODELNAME = "Unbabel/wmt22-comet-da"
 
 
 class COMET(Metric):
@@ -44,14 +44,15 @@ class COMET(Metric):
         dataloader = DataLoader(
             dataset=data,
             batch_size=16,
-            collate_fn=lambda x: self.model.prepare_sample(x, inference=True),
+            collate_fn=lambda x: self.model.prepare_sample(x, stage="predict"),
             num_workers=4,
         )
         cuda = 1 if torch.cuda.is_available() else 0
-        trainer = Trainer(gpus=cuda, deterministic=True, logger=False)
+        trainer = Trainer(gpus=cuda, logger=False)
         predictions = trainer.predict(
-            self.model, dataloaders=dataloader, return_predictions=True
+            self.model, dataloaders=dataloader
         )
+        predictions = [i["scores"] for i in predictions]
         scores = torch.cat(predictions, dim=0).tolist()
         return COMETResult(
             sum(scores) / len(scores), scores, src, cand, ref, self.name, self.modelname
