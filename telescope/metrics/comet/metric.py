@@ -38,13 +38,16 @@ class COMET(Metric):
         self.modelname = modelname
         self.model = load_from_checkpoint(download_model(modelname))
 
+    def prepare_sample(self, data):
+        return self.model.prepare_sample(data, stage="predict")
+
     def score(self, src: List[str], cand: List[str], ref: List[str]) -> COMETResult:
         data = {"src": src, "mt": cand, "ref": ref}
         data = [dict(zip(data, t)) for t in zip(*data.values())]
         dataloader = DataLoader(
             dataset=data,
             batch_size=16,
-            collate_fn=lambda x: self.model.prepare_sample(x, stage="predict"),
+            collate_fn=self.prepare_sample,
             num_workers=4,
         )
         cuda = 1 if torch.cuda.is_available() else 0
