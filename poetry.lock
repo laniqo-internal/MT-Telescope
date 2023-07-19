@@ -3414,25 +3414,29 @@ name = "unbabel-comet"
 version = "2.0.1"
 description = "High-quality Machine Translation Evaluation"
 optional = false
-python-versions = ">=3.8.0,<4.0.0"
-files = [
-    {file = "unbabel_comet-2.0.1-py3-none-any.whl", hash = "sha256:ae4628c42f057220198193a789bcee8171f5810fa6d0c5cbb595fbf453a36340"},
-    {file = "unbabel_comet-2.0.1.tar.gz", hash = "sha256:231f1b058302a082ed07dbcba100516dcf88afe3e26268399a342b4853e5f2e2"},
-]
+python-versions = "^3.8.0"
+files = []
+develop = false
 
 [package.dependencies]
-entmax = ">=1.1,<2.0"
-huggingface-hub = ">=0.12.0,<0.13.0"
+entmax = "^1.1"
+huggingface-hub = "^0.12.0"
 jsonargparse = "3.13.1"
-numpy = ">=1.20.0,<2.0.0"
-pandas = ">=1.4.1,<2.0.0"
-pytorch-lightning = ">=1.6.4,<2.0.0"
-sacrebleu = ">=2.0.0,<3.0.0"
-scipy = ">=1.5.4,<2.0.0"
-sentencepiece = ">=0.1.96,<0.2.0"
+numpy = "^1.20.0"
+pandas = ">=1.4.1"
+pytorch-lightning = "^1.6.4"
+sacrebleu = "^2.0.0"
+scipy = "^1.5.4"
+sentencepiece = "^0.1.96"
 torch = ">=1.6.0"
 torchmetrics = "0.8.2"
-transformers = ">=4.17,<5.0"
+transformers = "^4.17"
+
+[package.source]
+type = "git"
+url = "https://github.com/Unbabel/COMET.git"
+reference = "HEAD"
+resolved_reference = "02d1bd2e01fa32f3c0d6266e803ec01f09cf9c8f"
 
 [[package]]
 name = "urllib3"
@@ -3641,4 +3645,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.10.7"
-content-hash = "0812d2e5ccd06f1dcbb27dc2c59b494d418a322d8b6f7c94213317bef04035fe"
+content-hash = "2fb393d9e99f89edcd7efc09258f840e2f23cfceb06f40f6d3bef094ca63e4c5"
