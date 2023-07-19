@@ -51,9 +51,9 @@ class COMET(Metric):
             num_workers=4,
         )
         cuda = 1 if torch.cuda.is_available() else 0
-        trainer = Trainer(gpus=cuda, logger=False)
+        trainer = Trainer(gpus=cuda, deterministic=True, logger=False)
         predictions = trainer.predict(
-            self.model, dataloaders=dataloader
+            self.model, dataloaders=dataloader, return_predictions=True
         )
         predictions = [i["scores"] for i in predictions]
         scores = torch.cat(predictions, dim=0).tolist()
