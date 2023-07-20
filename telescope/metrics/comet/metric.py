@@ -13,13 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
-from typing import List
+from typing import Dict, List
 
 import torch
 from pytorch_lightning.trainer.trainer import Trainer
 from telescope.metrics.comet.result import COMETResult
 from telescope.metrics.metric import Metric
 from torch.utils.data import DataLoader
+from torch import tensor
 
 from comet import download_model, load_from_checkpoint
 
@@ -38,7 +39,7 @@ class COMET(Metric):
         self.modelname = modelname
         self.model = load_from_checkpoint(download_model(modelname))
 
-    def prepare_sample(self, data):
+    def prepare_sample(self, data: List[Dict[str, str]]) -> Dict[str, tensor]:
         return self.model.prepare_sample(data, stage="predict")
 
     def score(self, src: List[str], cand: List[str], ref: List[str]) -> COMETResult:
