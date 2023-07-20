@@ -18,12 +18,12 @@ MT-Telescope command line interface (CLI)
 Main commands:
     - score     Used to download Machine Translation metrics.
 """
-from typing import List, Union, Tuple
+from typing import List, Optional, Union, Tuple
 import os
 import click
 import json
 
-from telescope.metrics import AVAILABLE_METRICS, PairwiseResult
+from telescope.metrics import AVAILABLE_METRICS, COMET, PairwiseResult
 from telescope.testset import PairwiseTestset
 from telescope.filters import AVAILABLE_FILTERS
 from telescope.plotting import (
@@ -37,7 +37,9 @@ available_filters = {f.name: f for f in AVAILABLE_FILTERS}
 
 
 def readlines(ctx, param, file: click.File) -> List[str]:
-    return [l.strip() for l in file.readlines()]
+    if file:
+        return [l.strip() for l in file.readlines()]
+    return None
 
 
 def output_folder_exists(ctx, param, output_folder):
@@ -272,6 +274,14 @@ def compare(
     callback=readlines,
 )
 @click.option(
+    "--doc_ids",
+    "-ids",
+    required=False,
+    help="Document IDs.",
+    type=click.File(),
+    callback=readlines,
+)
+@click.option(
     "--language",
     "-l",
     required=True,
@@ -285,12 +295,22 @@ def compare(
     multiple=True,
     help="MT metric to run.",
 )
+@click.option(
+    "--model",
+    "-model",
+    required=False,
+    default="Unbabel/wmt22-comet-da",
+    type=str,
+    help="COMET model to be used. Default: Unbabel/wmt22-comet-da.",
+)
 def score(
     source: List[str],
     translation: List[str],
     reference: List[str],
+    doc_ids: Optional[List[str]],
     language: str,
     metric: Union[Tuple[str], str],
+    model: str,
 ):
     metrics = metric
     for metric in metrics:
@@ -298,8 +318,15 @@ def score(
             raise click.ClickException(f"{metric} does not support '{language}'")
     results = []
     for metric in metrics:
-        metric = available_metrics[metric](language)
-        results.append(metric.score(source, translation, reference))
+        if "COMET" not in metric:
+            metric = available_metrics[metric](language)
+            results.append(metric.score(source, translation, reference))
+        else:
+            metric = available_metrics[metric](language, modelname=model)
+            if isinstance(metric, COMET):
+                results.append(metric.score(source, translation, reference))
+            else:
+                results.append(metric.score(source, translation, reference, doc_ids))
 
     for result in results:
         click.secho(str(result), fg="yellow")
