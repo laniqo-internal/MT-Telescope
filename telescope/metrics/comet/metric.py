@@ -13,20 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
-from typing import List
+from typing import Dict, List
 
 import torch
 from pytorch_lightning.trainer.trainer import Trainer
 from telescope.metrics.comet.result import COMETResult
 from telescope.metrics.metric import Metric
 from torch.utils.data import DataLoader
+from torch import tensor
 
 from comet import download_model, load_from_checkpoint
 
 if "COMET_MODEL" in os.environ:
     MODELNAME = os.environ["COMET_MODEL"]
 else:
-    MODELNAME = "wmt20-comet-da"
+    MODELNAME = "Unbabel/wmt22-comet-da"
 
 
 class COMET(Metric):
@@ -38,13 +39,16 @@ class COMET(Metric):
         self.modelname = modelname
         self.model = load_from_checkpoint(download_model(modelname))
 
+    def prepare_sample(self, data: List[Dict[str, str]]) -> Dict[str, tensor]:
+        return self.model.prepare_sample(data, stage="predict")
+
     def score(self, src: List[str], cand: List[str], ref: List[str]) -> COMETResult:
         data = {"src": src, "mt": cand, "ref": ref}
         data = [dict(zip(data, t)) for t in zip(*data.values())]
         dataloader = DataLoader(
             dataset=data,
             batch_size=16,
-            collate_fn=lambda x: self.model.prepare_sample(x, inference=True),
+            collate_fn=self.prepare_sample,
             num_workers=4,
         )
         cuda = 1 if torch.cuda.is_available() else 0
@@ -52,6 +56,7 @@ class COMET(Metric):
         predictions = trainer.predict(
             self.model, dataloaders=dataloader, return_predictions=True
         )
+        predictions = [i["scores"] for i in predictions]
         scores = torch.cat(predictions, dim=0).tolist()
         return COMETResult(
             sum(scores) / len(scores), scores, src, cand, ref, self.name, self.modelname
