@@ -44,7 +44,7 @@ st.sidebar.image(logo)
 metrics = st.sidebar.multiselect(
     "Select the system-level metric you wish to run:",
     list(available_metrics.keys()),
-    default=["COMET", "chrF", "BLEU"],
+    default=["COMET", "chrF", "BLEU", "DocCOMET"],
 )
 
 metric = st.sidebar.selectbox(
