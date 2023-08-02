@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import streamlit as st
 
@@ -71,6 +71,7 @@ class PairwiseTestset(Testset):
         ref: List[str],
         language_pair: str,
         filenames: List[str],
+        doc_ids: List[Optional[str]] = [],
     ) -> None:
         self.src = src
         self.ref = ref
@@ -78,6 +79,7 @@ class PairwiseTestset(Testset):
         self.system_y = system_y
         self.language_pair = language_pair
         self.filenames = filenames
+        self.doc_ids = doc_ids
 
         assert len(ref) == len(
             src
@@ -94,13 +96,18 @@ class PairwiseTestset(Testset):
         ), "mismatch between system x and references ({} > {})".format(
             len(system_x), len(ref)
         )
+        assert doc_ids == [] or len(ref) == len(
+            doc_ids
+        ), "mismatch between references and documents ids ({} > {})".format(
+            len(ref), len(doc_ids)
+        )
 
     @staticmethod
     def hash_func(testset):
         return " ".join(testset.filenames)
 
     @classmethod
-    def read_data(cls):
+    def read_data(cls, show_ids_button: bool = False):
         st.subheader("Upload Files for analysis:")
         left1, right1 = st.columns(2)
         source_file = left1.file_uploader("Upload Sources", type=["txt"])
@@ -115,6 +122,15 @@ class PairwiseTestset(Testset):
 
         y_file = right2.file_uploader("Upload System Y Translations", type=["txt"])
         y = read_lines(y_file)
+
+        if show_ids_button:
+            left3, right3 = st.columns(2)
+            doc_ids_file = left3.file_uploader("Upload Documents Ids", type=["txt"])
+            doc_ids = read_lines(doc_ids_file)
+            if doc_ids == None:
+                doc_ids = []
+        else:
+            doc_ids = []
 
         language_pair = st.text_input(
             "Please input the lanaguage pair of the files to analyse (e.g. 'en-ru'):",
@@ -138,6 +154,7 @@ class PairwiseTestset(Testset):
                 references,
                 language_pair,
                 [source_file.name, x_file.name, y_file.name, ref_file.name],
+                doc_ids,
             )
 
     def __getitem__(self, i) -> Tuple[str]:

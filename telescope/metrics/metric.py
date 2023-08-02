@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import abc
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 from telescope.metrics.result import BootstrapResult, MetricResult, PairwiseResult
@@ -34,7 +34,7 @@ class Metric(metaclass=abc.ABCMeta):
             self.language = language
 
     @abc.abstractmethod
-    def score(self, src: List[str], cand: List[str], ref: List[str]) -> MetricResult:
+    def score(self, src: List[str], cand: List[str], ref: List[str], doc_ids: Optional[List[str]]) -> MetricResult:
         """ Metric scoring function. """
         pass
 
@@ -44,8 +44,12 @@ class Metric(metaclass=abc.ABCMeta):
 
     def pairwise_comparison(self, testset: PairwiseTestset):
         """ Function that scores the two candidate systems inside a paired testset. """
-        x_result = self.score(testset.src, testset.system_x, testset.ref)
-        y_result = self.score(testset.src, testset.system_y, testset.ref)
+        if self.name != "DocCOMET":
+            x_result = self.score(testset.src, testset.system_x, testset.ref)
+            y_result = self.score(testset.src, testset.system_y, testset.ref)
+        else:
+            x_result = self.score(testset.src, testset.system_x, testset.ref, testset.doc_ids)
+            y_result = self.score(testset.src, testset.system_y, testset.ref, testset.doc_ids)
         return PairwiseResult(x_result, y_result)
 
     @classmethod

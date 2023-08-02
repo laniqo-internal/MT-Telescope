@@ -32,7 +32,7 @@ class DocCOMET(Metric):
     name = "DocCOMET"
     system_only = False
 
-    def __init__(self, language=None, modelname: str = "wmt22-comet-da", **kwargs):
+    def __init__(self, language=None, modelname: str = "Unbabel/wmt22-comet-da", **kwargs):
         self.modelname = modelname
         self.model = load_from_checkpoint(download_model(modelname))
         self.model.set_document_level()

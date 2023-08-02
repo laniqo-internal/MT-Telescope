@@ -46,9 +46,11 @@ metrics = st.sidebar.multiselect(
     default=["COMET", "chrF", "BLEU", "DocCOMET"],
 )
 
+segment_compare_metrics = list(m.name for m in available_metrics.values() if m.segment_level)
+segment_compare_metrics.remove("DocCOMET")
 metric = st.sidebar.selectbox(
     "Select the segment-level metric you wish to run:",
-    list(m.name for m in available_metrics.values() if m.segment_level),
+    segment_compare_metrics,
     index=0,
 )
 
@@ -149,7 +151,8 @@ def run_all_metrics(testset, metrics, filters):
 # --------------------  APP  --------------------
 
 st.title("Welcome to MT-Telescope!")
-testset = PairwiseTestset.read_data()
+show_ids_button = "DocCOMET" in metrics
+testset = PairwiseTestset.read_data(show_ids_button)
 
 if testset:
     if metric not in metrics:
