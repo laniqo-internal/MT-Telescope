@@ -102,14 +102,14 @@ class PairwiseTestset(Testset):
     @classmethod
     def read_data(cls):
         st.subheader("Upload Files for analysis:")
-        left1, right1 = st.beta_columns(2)
+        left1, right1 = st.columns(2)
         source_file = left1.file_uploader("Upload Sources", type=["txt"])
         sources = read_lines(source_file)
 
         ref_file = right1.file_uploader("Upload References", type=["txt"])
         references = read_lines(ref_file)
 
-        left2, right2 = st.beta_columns(2)
+        left2, right2 = st.columns(2)
         x_file = left2.file_uploader("Upload System X Translations", type=["txt"])
         x = read_lines(x_file)
 

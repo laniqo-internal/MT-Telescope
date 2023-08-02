@@ -205,7 +205,7 @@ def plot_bucket_comparison(
         plot.savefig(saving_dir + "/bucket-analysis.png")
 
     if st._is_running_with_streamlit:
-        col1, col2, col3 = st.beta_columns(3)
+        col1, col2, col3 = st.columns(3)
         with col1:
             red_bucket = st.slider(
                 "Red bucket max treshold", min_score, 0.3, value=0.1, step=0.1
@@ -221,7 +221,7 @@ def plot_bucket_comparison(
                 "Blue bucket max treshold", yellow_bucket, 0.8, value=0.7, step=0.1
             )
 
-        right, left = st.beta_columns(2)
+        right, left = st.columns(2)
         left.pyplot(
             update_buckets(
                 pairwise_result.x_result.seg_scores,

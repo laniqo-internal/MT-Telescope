@@ -32,7 +32,6 @@ available_metrics = {m.name: m for m in AVAILABLE_METRICS}
 available_filters = {f.name: f for f in AVAILABLE_FILTERS}
 
 
-@st.cache
 def load_image(image_url):
     img = Image.open(requests.get(image_url, stream=True).raw)
     return img
@@ -173,7 +172,7 @@ if testset:
         plot_pairwise_distributions(results[metric])
 
         # Bootstrap Resampling
-        _, middle, _ = st.beta_columns(3)
+        _, middle, _ = st.columns(3)
         if middle.button("Perform Bootstrap Resampling:"):
             st.warning(
                 "Running metrics for {} partitions of size {}".format(
