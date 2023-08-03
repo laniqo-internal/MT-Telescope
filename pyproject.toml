@@ -9,7 +9,7 @@ homepage = "https://github.com/Unbabel/MT-Telescope"
 repository = "https://github.com/Unbabel/MT-Telescope"
 documentation = "https://github.com/Unbabel/MT-Telescope/README.md"
 keywords = [
-    "Machine Translation", 
+    "Machine Translation",
     "Evaluation",
     "Unbabel",
 ]
@@ -46,7 +46,34 @@ sentencepiece = "0.1.99"
 
 [tool.poetry.dev-dependencies]
 coverage = "^5.5"
-black = "^20.8b1"
+pre-commit = "^3.3"
+poetry-pre-commit-plugin = "^0.1.2"
+black = "^23.0.0"
+isort = "^5.0.0"
+mypy = "^1.0.0"
+
+[tool.black]
+# https://github.com/psf/black
+line-length = 120
+target-version = ["py39"]
+
+[tool.isort]
+# https://github.com/PyCQA/isort
+known_typing = "typing,types,typing_extensions,mypy,mypy_extensions"
+sections = "FUTURE,TYPING,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+include_trailing_comma = true
+default_section = "FIRSTPARTY"
+multi_line_output = 3
+indent = 4
+force_grid_wrap = 0
+line_length = 120
+
+[tool.mypy]
+disallow_untyped_defs = true
+show_error_codes = true
+allow_redefinition = true
+ignore_missing_imports = true
+disable_error_code = ["attr-defined", "override", "arg-type", "union-attr"]
 
 [tool.poetry.scripts]
 telescope = 'telescope.cli:telescope'
