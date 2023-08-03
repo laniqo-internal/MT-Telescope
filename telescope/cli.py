@@ -39,7 +39,7 @@ available_filters = {f.name: f for f in AVAILABLE_FILTERS}
 def readlines(ctx, param, file: click.File) -> List[str]:
     if file:
         return [l.strip() for l in file.readlines()]
-    return None
+    return []
 
 
 def output_folder_exists(ctx, param, output_folder):
@@ -83,6 +83,14 @@ def telescope():
     type=click.File(),
 )
 @click.option(
+    "--doc_ids",
+    "-ids",
+    required=False,
+    help="Document IDs.",
+    type=click.File(),
+    callback=readlines,
+)
+@click.option(
     "--language",
     "-l",
     required=True,
@@ -95,6 +103,14 @@ def telescope():
     required=True,
     multiple=True,
     help="MT metric to run.",
+)
+@click.option(
+    "--model",
+    "-model",
+    required=False,
+    default="Unbabel/wmt22-comet-da",
+    type=str,
+    help="COMET model to be used. Default: Unbabel/wmt22-comet-da.",
 )
 @click.option(
     "--filter",
@@ -155,8 +171,10 @@ def compare(
     system_x: click.File,
     system_y: click.File,
     reference: click.File,
+    doc_ids: List[Optional[str]],
     language: str,
     metric: Union[Tuple[str], str],
+    model: str,
     filter: Union[Tuple[str], str],
     length_min_val: float,
     length_max_val: float,
@@ -173,6 +191,7 @@ def compare(
         ref=[l.strip() for l in reference.readlines()],
         language_pair="X-" + language,
         filenames=[source.name, system_x.name, system_y.name, reference.name],
+        doc_ids=doc_ids,
     )
     corpus_size = len(testset)
     if filter:
@@ -307,7 +326,7 @@ def score(
     source: List[str],
     translation: List[str],
     reference: List[str],
-    doc_ids: Optional[List[str]],
+    doc_ids: [List[Optional[str]]],
     language: str,
     metric: Union[Tuple[str], str],
     model: str,

@@ -32,7 +32,6 @@ available_metrics = {m.name: m for m in AVAILABLE_METRICS}
 available_filters = {f.name: f for f in AVAILABLE_FILTERS}
 
 
-@st.cache
 def load_image(image_url):
     img = Image.open(requests.get(image_url, stream=True).raw)
     return img
@@ -47,9 +46,11 @@ metrics = st.sidebar.multiselect(
     default=["COMET", "chrF", "BLEU", "DocCOMET"],
 )
 
+segment_compare_metrics = list(m.name for m in available_metrics.values() if m.segment_level)
+segment_compare_metrics.remove("DocCOMET")
 metric = st.sidebar.selectbox(
     "Select the segment-level metric you wish to run:",
-    list(m.name for m in available_metrics.values() if m.segment_level),
+    segment_compare_metrics,
     index=0,
 )
 
@@ -150,7 +151,8 @@ def run_all_metrics(testset, metrics, filters):
 # --------------------  APP  --------------------
 
 st.title("Welcome to MT-Telescope!")
-testset = PairwiseTestset.read_data()
+show_ids_button = "DocCOMET" in metrics
+testset = PairwiseTestset.read_data(show_ids_button)
 
 if testset:
     if metric not in metrics:
@@ -173,7 +175,7 @@ if testset:
         plot_pairwise_distributions(results[metric])
 
         # Bootstrap Resampling
-        _, middle, _ = st.beta_columns(3)
+        _, middle, _ = st.columns(3)
         if middle.button("Perform Bootstrap Resampling:"):
             st.warning(
                 "Running metrics for {} partitions of size {}".format(
