@@ -96,7 +96,7 @@ class PairwiseTestset(Testset):
         ), "mismatch between system x and references ({} > {})".format(
             len(system_x), len(ref)
         )
-        assert doc_ids == [] or len(ref) == len(
+        assert doc_ids == None or doc_ids and len(ref) == len(
             doc_ids
         ), "mismatch between references and documents ids ({} > {})".format(
             len(ref), len(doc_ids)
@@ -127,10 +127,9 @@ class PairwiseTestset(Testset):
             left3, right3 = st.columns(2)
             doc_ids_file = left3.file_uploader("Upload Documents Ids", type=["txt"])
             doc_ids = read_lines(doc_ids_file)
-            if doc_ids == None:
-                doc_ids = []
         else:
-            doc_ids = []
+            doc_ids_file = None
+            doc_ids = None
 
         language_pair = st.text_input(
             "Please input the lanaguage pair of the files to analyse (e.g. 'en-ru'):",
@@ -142,6 +141,7 @@ class PairwiseTestset(Testset):
             and (source_file is not None)
             and (y_file is not None)
             and (x_file is not None)
+            and (doc_ids_file is not None and show_ids_button or not show_ids_button)
             and (language_pair != "")
         ):
             st.success(
