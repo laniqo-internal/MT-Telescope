@@ -530,7 +530,8 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
             collate_fn=self.prepare_for_inference,
             num_workers=num_workers,
         )
-        accelerator = accelerator if gpus > 1 else None
+        accelerator = "gpu" if torch.cuda.is_available() else "cpu"
+        devices = [0] if torch.cuda.is_available() else "auto"
 
         warnings.filterwarnings(
             "ignore",
@@ -539,12 +540,12 @@ class CometModel(ptl.LightningModule, metaclass=abc.ABCMeta):
         )
         if progress_bar:
             trainer = ptl.Trainer(
-                gpus=gpus,
                 deterministic=False,
                 logger=False,
                 callbacks=[PredictProgressBar()],
                 accelerator=accelerator,
-                max_epochs=-1
+                max_epochs=-1,
+                devices=devices,
             )
         else:
             trainer = ptl.Trainer(
