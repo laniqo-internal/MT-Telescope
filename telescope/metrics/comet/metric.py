@@ -51,8 +51,10 @@ class COMET(Metric):
             collate_fn=self.prepare_sample,
             num_workers=4,
         )
-        cuda = 1 if torch.cuda.is_available() else 0
-        trainer = Trainer(gpus=cuda, deterministic=False, logger=False)
+        accelerator = "gpu" if torch.cuda.is_available() else "cpu"
+        devices = [0] if torch.cuda.is_available() else "auto"
+        trainer = Trainer(accelerator=accelerator, devices=devices, deterministic=False, logger=False)
+        
         predictions = trainer.predict(
             self.model, dataloaders=dataloader, return_predictions=True
         )
