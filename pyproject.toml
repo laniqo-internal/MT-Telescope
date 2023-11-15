@@ -29,7 +29,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.9.7 || >3.9.7,<3.10.7"
-unbabel-comet = {git = "https://github.com/Unbabel/COMET.git"}
+unbabel-comet = {git = "https://github.com/Unbabel/COMET.git", rev = "8503fe799658b753055ced0b1f0950e4404b5065"}
 bert-score = "0.3.13"
 sacrebleu = "2.3.1"
 stanza = ">=1.2"
