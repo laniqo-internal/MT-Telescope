@@ -40,14 +40,14 @@ class DocCOMET(Metric):
     def prepare_sample(self, data):
         return self.model.prepare_sample(data, inference=True)
     
-    def score(self, src: List[str], cand: List[str], ref: List[str], doc_ids: List[str]) -> DocCOMETResult:
+    def score(self, src: List[str], cand: List[str], ref: List[str], doc_ids: List[str], num_workers: int = None) -> DocCOMETResult:
         src = add_context(orig_txt=src, context=src, doc_ids=doc_ids, sep_token=self.model.encoder.tokenizer.sep_token)
         cand = add_context(orig_txt=cand, context=ref, doc_ids=doc_ids, sep_token=self.model.encoder.tokenizer.sep_token)
         ref = add_context(orig_txt=ref, context=ref, doc_ids=doc_ids, sep_token=self.model.encoder.tokenizer.sep_token)
         data = {"src": src, "mt": cand, "ref": ref}
         data = [dict(zip(data, t)) for t in zip(*data.values())]
         cuda = 1 if torch.cuda.is_available() else 0
-        seg_scores, scores = self.model.predict(data, batch_size=16, gpus=cuda)
+        seg_scores, scores = self.model.predict(data, batch_size=16, gpus=cuda, num_workers=num_workers)
         return DocCOMETResult(
             sum(seg_scores) / len(seg_scores), scores, src, cand, ref, self.name, self.modelname
         )
