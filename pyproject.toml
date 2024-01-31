@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mt-telescope"
-version = "0.0.2"
+version = "0.1.1"
 description = "A visual platform for contrastive evaluation of machine translation systems"
 authors = ["Ricardo Rei, Craig Stewart, Catarina Farinha, Alon Lavie"]
 license = "Apache-2.0"
@@ -33,7 +33,7 @@ unbabel-comet = {git = "https://github.com/Unbabel/COMET.git", rev = "8503fe7996
 bert-score = "0.3.13"
 sacrebleu = "2.3.1"
 stanza = ">=1.2"
-streamlit = "1.28.1"
+streamlit = "1.26.0"
 plotly = "5.0.0"
 numpy = ">=1.20.0"
 pytorch-nlp = "0.5.0"
