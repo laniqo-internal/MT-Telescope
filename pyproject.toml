@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mt-telescope"
-version = "0.1.1"
+version = "0.1.2"
 description = "A visual platform for contrastive evaluation of machine translation systems"
 authors = ["Ricardo Rei, Craig Stewart, Catarina Farinha, Alon Lavie"]
 license = "Apache-2.0"
@@ -29,7 +29,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.9.7 || >3.9.7,<3.10.7"
-unbabel-comet = {git = "https://github.com/Unbabel/COMET.git", rev = "8503fe799658b753055ced0b1f0950e4404b5065"}
+unbabel-comet = {git = "git@github.com:laniqo-internal/COMET.git", tag = "v2.2.0"}
 bert-score = "0.3.13"
 sacrebleu = "2.3.1"
 stanza = ">=1.2"
@@ -42,7 +42,7 @@ click = "8.0.4"
 protobuf = "4.24.4"
 torch = "2.0.0"
 pyyaml = "6.0.1"
-sentencepiece = "0.1.99"
+sentencepiece = {git = "git@github.com:laniqo-internal/sentencepiece.git", subdirectory = "python"}
 altair = "4.2.0"
 
 [tool.poetry.dev-dependencies]
