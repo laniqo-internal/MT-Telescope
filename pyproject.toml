@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mt-telescope"
-version = "0.1.2"
+version = "0.1.4"
 description = "A visual platform for contrastive evaluation of machine translation systems"
 authors = ["Ricardo Rei, Craig Stewart, Catarina Farinha, Alon Lavie"]
 license = "Apache-2.0"
@@ -9,7 +9,7 @@ homepage = "https://github.com/Unbabel/MT-Telescope"
 repository = "https://github.com/Unbabel/MT-Telescope"
 documentation = "https://github.com/Unbabel/MT-Telescope/README.md"
 keywords = [
-    "Machine Translation", 
+    "Machine Translation",
     "Evaluation",
     "Unbabel",
 ]
@@ -29,7 +29,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.9.7 || >3.9.7,<3.10.7"
-unbabel-comet = {git = "git@github.com:laniqo-internal/COMET.git", tag = "v2.2.0"}
+unbabel-comet = {git = "git@github.com:laniqo-internal/COMET.git", tag = "v2.2.1"}
 bert-score = "0.3.13"
 sacrebleu = "2.3.1"
 stanza = ">=1.2"
@@ -42,7 +42,7 @@ click = "8.0.4"
 protobuf = "4.24.4"
 torch = "2.0.0"
 pyyaml = "6.0.1"
-sentencepiece = {git = "git@github.com:laniqo-internal/sentencepiece.git", subdirectory = "python"}
+sentencepiece = {version = "~0.2.1+laniqo", source = "laniqo"}
 altair = "4.2.0"
 
 [tool.poetry.dev-dependencies]
@@ -51,6 +51,16 @@ black = "^20.8b1"
 
 [tool.poetry.scripts]
 telescope = 'telescope.cli:telescope'
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
+
+
+[[tool.poetry.source]]
+name = "laniqo"
+url = "https://europe-west4-python.pkg.dev/laniqo-cr/pypi/simple/"
+priority = "supplemental"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
