@@ -1,0 +1,40 @@
+name: Build and publish package to Artifact Registry
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash -l -e {0}
+
+jobs:
+  build-and-publish-pypi:
+    runs-on: self-hosted
+    container:
+      image: europe-west4-docker.pkg.dev/laniqo-cr/base/pyenv/python:latest-python3.9-debian12
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+    - name: Append revision to package version
+      run: |
+        sed -E -i "s/^(version\s+=\s+)\"(([0-9]+|\.)+)\"$/\1\"\2+laniqo\"/" pyproject.toml
+    - name: Build package
+      run: |
+        poetry source add --priority=supplemental laniqo "${{ vars.GLOBAL_PYPI_LANIQO_URL }}"
+        poetry build -n
+    - name: Publish to index
+      run: |
+        export GOOGLE_APPLICATION_CREDENTIALS="$(mktemp /tmp/google-application-credentials.XXXXXX)"
+
+        cat << EOF > "${GOOGLE_APPLICATION_CREDENTIALS}"
+        ${{ secrets.ARTIFACT_REGISTRY_SERVICEACCOUNT_KEY }}
+        EOF
+
+        poetry config repositories.laniqo "${{ vars.GLOBAL_PYPI_LANIQO_URL }}"
+        poetry publish --repository laniqo

@@ -29,7 +29,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.9.7 || >3.9.7,<3.10.7"
-unbabel-comet = {git = "git@github.com:laniqo-internal/COMET.git", tag = "v2.2.1"}
+unbabel-comet = {version = "~2.2.1+laniqo", source = "laniqo"}
 bert-score = "0.3.13"
 sacrebleu = "2.3.1"
 stanza = ">=1.2"
