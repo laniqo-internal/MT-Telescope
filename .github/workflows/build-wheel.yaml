@@ -15,7 +15,7 @@ defaults:
 
 jobs:
   build-and-publish-pypi:
-    runs-on: self-hosted
+    runs-on: runner-toolscluster
     container:
       image: europe-west4-docker.pkg.dev/laniqo-cr/base/pyenv/python:latest-python3.9-debian12
     steps:
